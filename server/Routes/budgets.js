@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 // Get single budget
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Budget.findByOne({
+    const data = await Budget.fineOne({
       _id: req.params.id,
       userId: req.userId,
     });

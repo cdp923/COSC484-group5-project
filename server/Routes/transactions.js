@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 // Get single account
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Account.findByOne({
+    const data = await Account.fineOne({
       _id: req.params.id,
       userId: req.userId,
     });
