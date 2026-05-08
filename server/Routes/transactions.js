@@ -1,37 +1,37 @@
 const express = require("express");
 const router = express.Router();
 const requireAuth = require("../middleware/requireAuth");
-const Account = require("../models/accounts");
+const Transaction = require("../models/transactions");
 
 router.use(requireAuth);
 
-// Get all accounts
+// Get all transactions
 router.get("/", async (req, res) => {
   try {
-    const data = await Account.find({ userId: req.userId });
+    const data = await Transaction.find({ userId: req.userId });
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get single account
+// Get single transaction
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Account.fineOne({
+    const data = await Transaction.fineOne({
       _id: req.params.id,
       userId: req.userId,
     });
-    if (!data) return res.status(404).json({ message: "Account not found" });
+    if (!data) return res.status(404).json({ message: "Transaction not found" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Creates a account
+// Creates a transaction
 router.post("/", async (req, res) => {
   try {
-    const data = await Account.create({
+    const data = await Transaction.create({
       ...req.body,
       userId: req.userId,
     });
@@ -41,10 +41,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Updates an Account
+// Updates an Transaction
 router.patch("/:id", async (req, res) => {
   try {
-    const updated = await Account.findOneAndUpdate(
+    const updated = await Transaction.findOneAndUpdate(
       { _id: req.params.id, userId: req.userId },
       { ...req.body, lastUpdated: Date.now() },
       { new: true, runValidators: true }
@@ -56,10 +56,10 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// Deletes an Account
+// Deletes an Transaction
 router.delete("/:id", async (req, res) => {
   try {
-    const deleted = await Account.findOneAndDelete({ _id: req.params.id, userId: req.userId });
+    const deleted = await Transaction.findOneAndDelete({ _id: req.params.id, userId: req.userId });
     if (!deleted) return res.status(404).json({ message: "Not found" });
     res.json({ message: "Deleted" });
   } catch (err) {
