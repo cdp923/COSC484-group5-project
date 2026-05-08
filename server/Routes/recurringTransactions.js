@@ -1,5 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const requireAuth = require("../middleware/requireAuth");
+const Account = require("../models/accounts");
+
+router.use(requireAuth);
 
 // Get All
 router.get("/", async (req, res) => {
