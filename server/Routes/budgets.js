@@ -18,11 +18,12 @@ router.get("/", async (req, res) => {
 // Get single budget
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Budget.fineOne({
+    const data = await Budget.findOne({
       _id: req.params.id,
       userId: req.userId,
     });
     if (!data) return res.status(404).json({ message: "Budget not found" });
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

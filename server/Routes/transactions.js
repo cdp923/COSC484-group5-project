@@ -18,11 +18,12 @@ router.get("/", async (req, res) => {
 // Get single transaction
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Transaction.fineOne({
+    const data = await Transaction.findOne({
       _id: req.params.id,
       userId: req.userId,
     });
     if (!data) return res.status(404).json({ message: "Transaction not found" });
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

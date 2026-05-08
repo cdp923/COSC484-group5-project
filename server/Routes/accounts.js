@@ -18,11 +18,12 @@ router.get("/", async (req, res) => {
 // Get single account
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Account.fineOne({
+    const data = await Account.findOne({
       _id: req.params.id,
       userId: req.userId,
     });
     if (!data) return res.status(404).json({ message: "Account not found" });
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
