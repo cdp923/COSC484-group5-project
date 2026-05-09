@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const requireAuth = require("../middleware/requireAuth");
-const Account = require("../models/accounts");
+const RecurringTransaction = require("../models/recurringTransactions");
 
 router.use(requireAuth);
 
 // Get all recurring transactions
 router.get("/", async (req, res) => {
   try {
-    const data = await recurringTransactions.find({ usersId: req.userId });
+    const data = await RecurringTransaction.find({ userId: req.userId });
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -18,25 +18,10 @@ router.get("/", async (req, res) => {
 // Get active recurring transactions
 router.get("/active", async (req, res) => {
   try {
-    const data = await recurringTransactions.find({
+    const data = await RecurringTransaction.find({
       userId: req.userId,
       isActive: true,
     });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get one recurring transaction
-router.get("/:id", async (req, res) => {
-  try {
-    const data = await RecurringTransaction.findOne({
-      _id: req.params.id,
-      userId: req.userId,
-    });
-    if (!data)
-      return res.status(404).json({ error: "Recurring transaction not found" });
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -56,12 +41,12 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update a recurring transaction
-router.patch("/:id", async (req, res) => {
+// Deactivate a recurring transaction
+router.patch("/:id/deactivate", async (req, res) => {
   try {
     const updated = await RecurringTransaction.findOneAndUpdate(
       { _id: req.params.id, userId: req.userId },
-      { ...req.body, lastUpdated: Date.now() },
+      { isActive: false, endDate: Date.now(), lastUpdated: Date.now() },
       { returnDocument: "after", runValidators: true },
     );
     if (!updated)
@@ -72,12 +57,27 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// Deactivate a recurring transaction
-router.post("/:id/deactivate", async (req, res) => {
+// Get one recurring transaction
+router.get("/:id", async (req, res) => {
+  try {
+    const data = await RecurringTransaction.findOne({
+      _id: req.params.id,
+      userId: req.userId,
+    });
+    if (!data)
+      return res.status(404).json({ error: "Recurring transaction not found" });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update a recurring transaction
+router.patch("/:id", async (req, res) => {
   try {
     const updated = await RecurringTransaction.findOneAndUpdate(
       { _id: req.params.id, userId: req.userId },
-      { isActive: false, endDate: Date.now(), lastUpdated: Date.now() },
+      { ...req.body, lastUpdated: Date.now() },
       { returnDocument: "after", runValidators: true },
     );
     if (!updated)

@@ -1,4 +1,21 @@
 const mongoose = require("mongoose");
+const MimeNode = require("nodemailer/lib/mime-node");
+
+const budgetCategorySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  limit: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+  spent: {
+    type: Number,
+    default: 0,
+  },
+});
 
 const budgetSchema = new mongoose.Schema({
   userId: {
@@ -24,7 +41,7 @@ const budgetSchema = new mongoose.Schema({
     enum: ["weekly", "monthly", "yearly"],
     default: "monthly",
   },
-  categories: { type: [budgetSchema], default: [] },
+  categories: { type: [budgetCategorySchema], default: [] },
   createdAt: {
     type: Date,
     default: Date.now,

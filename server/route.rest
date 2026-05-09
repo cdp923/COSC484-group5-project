@@ -1,4 +1,8 @@
-### Register a new user
+# =============================================================
+# Auth
+# =============================================================
+
+### Register
 POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
@@ -26,7 +30,11 @@ Content-Type: application/json
 
 @token = {{login.response.body.token}}
 
-### Get all users
+# =============================================================
+# Users
+# =============================================================
+
+### Get all users (admin only)
 GET http://localhost:3000/api/users
 Authorization: Bearer {{token}}
 
@@ -44,7 +52,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "lastname": "Doe"
+  "lastname": "Smith"
 }
 
 ###
@@ -55,5 +63,229 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "password": "password456"
+  "password": "newpassword456"
 }
+
+###
+
+### Delete a user (admin only)
+DELETE http://localhost:3000/api/users/000000000000000000000000
+Authorization: Bearer {{token}}
+
+# =============================================================
+# Accounts
+# =============================================================
+
+### Create an account
+# @name createAccount
+POST http://localhost:3000/api/accounts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Main Checking",
+  "accountType": "checking",
+  "institution": "Chase Bank",
+  "balance": "5000.00"
+}
+
+###
+
+@accountId = {{createAccount.response.body._id}}
+
+### Get all my accounts
+GET http://localhost:3000/api/accounts
+Authorization: Bearer {{token}}
+
+###
+
+### Get one account
+GET http://localhost:3000/api/accounts/{{accountId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Update an account
+PATCH http://localhost:3000/api/accounts/{{accountId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "balance": "5250.00"
+}
+
+###
+
+### Delete an account
+DELETE http://localhost:3000/api/accounts/{{accountId}}
+Authorization: Bearer {{token}}
+
+# =============================================================
+# Budgets
+# =============================================================
+
+### Create a budget
+# @name createBudget
+POST http://localhost:3000/api/budgets
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Monthly Budget",
+  "period": "monthly",
+  "targetBalance": 3000,
+  "currentBalance": 0,
+  "startDate": "2025-05-01",
+  "categories": [
+    { "name": "Groceries", "limit": 600 },
+    { "name": "Transport", "limit": 200 }
+  ]
+}
+
+###
+
+@budgetId = {{createBudget.response.body._id}}
+
+### Get all my budgets
+GET http://localhost:3000/api/budgets
+Authorization: Bearer {{token}}
+
+###
+
+### Get one budget
+GET http://localhost:3000/api/budgets/{{budgetId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Update a budget
+PATCH http://localhost:3000/api/budgets/{{budgetId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "targetBalance": 3500
+}
+
+###
+
+### Delete a budget
+DELETE http://localhost:3000/api/budgets/{{budgetId}}
+Authorization: Bearer {{token}}
+
+# =============================================================
+# Transactions
+# =============================================================
+
+### Create a transaction
+# @name createTransaction
+POST http://localhost:3000/api/transactions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "accountId": "{{accountId}}",
+  "budgetId": "{{budgetId}}",
+  "type": "expense",
+  "amount": 52.34,
+  "merchant": "Whole Foods",
+  "description": "Weekly groceries",
+  "date": "2025-05-01"
+}
+
+###
+
+@transactionId = {{createTransaction.response.body._id}}
+
+### Get all my transactions
+GET http://localhost:3000/api/transactions
+Authorization: Bearer {{token}}
+
+###
+
+### Get one transaction
+GET http://localhost:3000/api/transactions/{{transactionId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Update a transaction
+PATCH http://localhost:3000/api/transactions/{{transactionId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 48.99,
+  "description": "Weekly groceries - corrected amount"
+}
+
+###
+
+### Delete a transaction
+DELETE http://localhost:3000/api/transactions/{{transactionId}}
+Authorization: Bearer {{token}}
+
+# =============================================================
+# Recurring Transactions
+# =============================================================
+
+### Create a recurring transaction
+# @name createRecurring
+POST http://localhost:3000/api/recurringTransactions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "accountId": "{{accountId}}",
+  "budgetId": "{{budgetId}}",
+  "name": "Netflix",
+  "type": "expense",
+  "amount": 15.99,
+  "frequency": "monthly",
+  "startDate": "2025-01-01",
+  "transactionDate": "2025-06-01",
+  "merchant": "Netflix"
+}
+
+###
+
+@recurringId = {{createRecurring.response.body._id}}
+
+### Get all my recurring transactions
+GET http://localhost:3000/api/recurringTransactions
+Authorization: Bearer {{token}}
+
+###
+
+### Get active recurring transactions only
+GET http://localhost:3000/api/recurringTransactions/active
+Authorization: Bearer {{token}}
+
+###
+
+### Get one recurring transaction
+GET http://localhost:3000/api/recurringTransactions/{{recurringId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Update a recurring transaction
+PATCH http://localhost:3000/api/recurringTransactions/{{recurringId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 17.99
+}
+
+###
+
+### Deactivate a recurring transaction
+PATCH http://localhost:3000/api/recurringTransactions/{{recurringId}}/deactivate
+Authorization: Bearer {{token}}
+
+###
+
+### Delete a recurring transaction
+DELETE http://localhost:3000/api/recurringTransactions/{{recurringId}}
+Authorization: Bearer {{token}}

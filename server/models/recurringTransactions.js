@@ -3,7 +3,7 @@ const users = require("./users");
 const budgets = require("./budgets");
 
 const recurringTransactionSchema = new mongoose.Schema({
-  usersId: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -57,14 +57,17 @@ const recurringTransactionSchema = new mongoose.Schema({
     default: true,
   },
   createdAt: {
-    type: Date.now,
+    type: Date,
+    default: Date.now,
   },
   lastUpdated: {
-    type: Date.now,
+    type: Date,
+    default: Date.now,
   },
 });
 
 module.exports = mongoose.model(
   "RecurringTransaction",
   recurringTransactionSchema,
+  "recurringTransactions",
 );
