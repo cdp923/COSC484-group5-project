@@ -1,38 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const requireAuth = require("../middleware/requireAuth");
-const Account = require("../models/accounts");
+const Budget = require("../models/budgets");
 
 router.use(requireAuth);
 
-// Get all accounts
+// Get all budgets
 router.get("/", async (req, res) => {
   try {
-    const data = await Account.find({ userId: req.userId });
+    const data = await Budget.find({ userId: req.userId });
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get single account
+// Get single budget
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Account.findOne({
+    const data = await Budget.findOne({
       _id: req.params.id,
       userId: req.userId,
     });
-    if (!data) return res.status(404).json({ message: "Account not found" });
+    if (!data) return res.status(404).json({ message: "Budget not found" });
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Creates an account
+// Creates a budget
 router.post("/", async (req, res) => {
   try {
-    const data = await Account.create({
+    const data = await Budget.create({
       ...req.body,
       userId: req.userId,
     });
@@ -42,10 +42,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Updates an account
+// Updates a budget
 router.patch("/:id", async (req, res) => {
   try {
-    const updated = await Account.findOneAndUpdate(
+    const updated = await Budget.findOneAndUpdate(
       { _id: req.params.id, userId: req.userId },
       { ...req.body, lastUpdated: Date.now() },
       { new: true, runValidators: true },
@@ -57,10 +57,10 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// Deletes an account
+// Deletes a budget
 router.delete("/:id", async (req, res) => {
   try {
-    const deleted = await Account.findOneAndDelete({
+    const deleted = await Budget.findOneAndDelete({
       _id: req.params.id,
       userId: req.userId,
     });
