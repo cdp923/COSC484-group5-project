@@ -5,7 +5,7 @@ import "./styles/accounts.css";
 const ACCOUNTS_URL = `${API_BASE}/accounts`;
 
 export default function Accounts() {
-  const authFetch = useAuthFetch(); // used to make authenticated requests to the API
+  const authFetch = useAuthFetch();
 
   // state variables 
   const [accounts, setAccounts] = useState([]);
