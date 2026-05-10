@@ -4,11 +4,13 @@ import "./styles/transactions.css";
 
 const TRANSACTIONS_URL = `${API_BASE}/transactions`;
 const ACCOUNTS_URL = `${API_BASE}/accounts`;
+const BUDGETS_URL = `${API_BASE}/budgets`;
 
 export default function Transactions() { // function to get user's transactions from the API
   const authFetch = useAuthFetch();
   const [transactions, setTransactions] = useState([]);
   const [accounts, setAccounts] = useState([]);
+  const [budgets, setBudgets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,16 +19,19 @@ export default function Transactions() { // function to get user's transactions 
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [transferAccountId, setTransferAccountId] = useState("");
+  const [budgetId, setBudgetId] = useState("");
 
   async function loadData() { // fetch to load user's transactions and accounts
     try {
       setError(null);
-      const [txns, accts] = await Promise.all([
+      const [txns, accts, bdgs] = await Promise.all([
         authFetch(TRANSACTIONS_URL),
         authFetch(ACCOUNTS_URL),
+        authFetch(BUDGETS_URL),
       ]);
       setTransactions(txns);
       setAccounts(accts);
+      setBudgets(bdgs);
     } catch (err) {
       if (err.message !== "Unauthorized") setError(err.message);
     } finally {
@@ -50,15 +55,24 @@ export default function Transactions() { // function to get user's transactions 
       if (type === "transfer" && transferAccountId) {
         body.transferAccountId = transferAccountId;
       }
+      if (type === "expense" && budgetId) {
+        body.budgetId = budgetId;
+      }
       const created = await authFetch(TRANSACTIONS_URL, {
         method: "POST",
         body: JSON.stringify(body),
       });
-      // state setters to update the state variables
       setTransactions((prev) => [...prev, created]);
+      const [updatedAccounts, updatedBudgets] = await Promise.all([
+        authFetch(ACCOUNTS_URL),
+        authFetch(BUDGETS_URL),
+      ]);
+      setAccounts(updatedAccounts);
+      setBudgets(updatedBudgets);
       setAmount("");
       setDescription("");
       setTransferAccountId("");
+      setBudgetId("");
     } catch (err) {
       if (err.message !== "Unauthorized") setError(err.message);
     }
@@ -68,6 +82,12 @@ export default function Transactions() { // function to get user's transactions 
     try {
       await authFetch(`${TRANSACTIONS_URL}/${id}`, { method: "DELETE" });
       setTransactions((prev) => prev.filter((t) => t._id !== id));
+      const [updatedAccounts, updatedBudgets] = await Promise.all([
+        authFetch(ACCOUNTS_URL),
+        authFetch(BUDGETS_URL),
+      ]);
+      setAccounts(updatedAccounts);
+      setBudgets(updatedBudgets);
     } catch (err) {
       if (err.message !== "Unauthorized") setError(err.message);
     }
@@ -125,6 +145,24 @@ export default function Transactions() { // function to get user's transactions 
                       {a.name}
                     </option>
                   ))}
+              </select>
+            </>
+          )}
+
+          {type === "expense" && budgets.length > 0 && (
+            <>
+              <label htmlFor="txn-budget">Budget (optional)</label>
+              <select
+                id="txn-budget"
+                value={budgetId}
+                onChange={(e) => setBudgetId(e.target.value)}
+              >
+                <option value="">No budget</option>
+                {budgets.map((b) => (
+                  <option key={b._id} value={b._id}>
+                    {b.name} — {b.period}
+                  </option>
+                ))}
               </select>
             </>
           )}
