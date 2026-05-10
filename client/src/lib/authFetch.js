@@ -24,13 +24,7 @@ export function useAuthFetch() {
         throw new Error("Unauthorized");
       }
 
-      const text = await response.json();
-      let data = null;
-      try {
-        data = text ? JSON.parse(text) : null;
-      } catch {
-        data = text;
-      }
+      const data = await response.json();
 
       if (!response.ok) {
         const msg =
