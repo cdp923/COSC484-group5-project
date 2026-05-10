@@ -21,7 +21,6 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Dashboard</h1>
       <Box sx={{ p: 2 }}>
       <Paper elevation={1} sx={{ mb: 2 }}>
         <Tabs
@@ -30,6 +29,7 @@ export default function Dashboard() {
           variant="scrollable"
           scrollButtons="auto"
           aria-label="dashboard tabs"
+          centered
         >
           <Tab label="Accounts" />
           <Tab label="Transactions" />
