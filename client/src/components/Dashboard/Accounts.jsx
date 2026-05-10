@@ -53,6 +53,28 @@ export default function Accounts() {
   return (
     <>
       <div className="accounts-container">
+        <h3>Create An Account</h3>
+        {error && <p className="error">{error}</p>}
+        <form className="accounts-form" onSubmit={handleCreate}>
+          <label htmlFor="name">Account Name</label>
+          <input type="text" id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} required
+          />
+
+          <label htmlFor="accountType">Account Type</label>
+          <select id="accountType" name="accountType" value={accountType} onChange={(e) => setAccountType(e.target.value)} required>
+            <option value="checking">Checking</option>
+            <option value="savings">Savings</option>
+            <option value="credit">Credit</option>
+            <option value="investment">Investment</option>
+          </select>
+
+          <label htmlFor="balance">Starting Balance</label>
+          <input type="number" id="balance" name="balance" value={balance} onChange={(e) => setBalance(e.target.value)} required />
+
+          <button className="btn btn-secondary" type="submit">
+            Create Account
+          </button>
+        </form>
       </div>
     </>
   );
