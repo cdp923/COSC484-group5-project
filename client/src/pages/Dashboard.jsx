@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 export default function Dashboard() {
   const [users, setUsers] = useState([]);
@@ -6,10 +6,19 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-  const userURL = `${baseURL}/users/me`;
-  const accountsURL = `${baseURL}/accounts`;
-  const transactionsURL = `${baseURL}/transactions`;
-  const budgetsURL = `${baseURL}/budgets`;
+
+  const URLS = {
+    user: `${baseURL}/users/me`,
+
+    accounts: `${baseURL}/accounts`,
+    account: `${baseURL}/accounts/:id`,
+
+    transactions: `${baseURL}/transactions`,
+    transaction: `${baseURL}/transactions/:id`,
+
+    budgets: `${baseURL}/budgets`,
+    budget: `${baseURL}/budgets/:id`,
+  };
 
   const token = localStorage.getItem("token");
 
