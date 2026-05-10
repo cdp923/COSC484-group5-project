@@ -1,0 +1,186 @@
+/* Shared layout: form on the left, table on the right */
+.dashboard-panel .panel-form form {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.dashboard-panel {
+  display: flex;
+  gap: 2rem;
+  align-items: stretch;
+  padding: 1rem 0;
+}
+
+/* ── Form panel ── */
+.dashboard-panel .panel-form {
+  flex: 0 0 340px;
+  box-sizing: border-box;
+  background: var(--neutral-white);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.dashboard-panel .panel-form h3 {
+  font-size: 1.4rem;
+  line-height: 1.8rem;
+  margin: 0 0 1.2rem;
+  color: var(--primary);
+}
+
+.dashboard-panel .panel-form label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--neutral-dark);
+}
+
+.dashboard-panel .panel-form input,
+.dashboard-panel .panel-form select {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  margin-bottom: 1rem;
+  border: 1.5px solid var(--neutral-light);
+  border-radius: 0.5rem;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  color: var(--neutral-dark);
+  background: var(--bg-light);
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.dashboard-panel .panel-form input:focus,
+.dashboard-panel .panel-form select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.dashboard-panel .panel-form .btn {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* ── Table panel ── */
+.dashboard-panel .panel-table {
+  flex: 1;
+  box-sizing: border-box;
+  background: var(--neutral-white);
+  border-radius: 1rem;
+  padding: 2rem;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.dashboard-panel .panel-table h3 {
+  font-size: 1.4rem;
+  line-height: 1.8rem;
+  margin: 0 0 1.2rem;
+  color: var(--primary);
+}
+
+.dashboard-panel .panel-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-panel .panel-table th,
+.dashboard-panel .panel-table td {
+  text-align: left;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--neutral-light);
+  font-size: 0.9rem;
+  color: var(--neutral-dark);
+}
+
+.dashboard-panel .panel-table th {
+  color: var(--neutral);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding-bottom: 0.6rem;
+}
+
+.dashboard-panel .panel-table tbody tr:hover {
+  background: var(--bg-light);
+}
+
+.dashboard-panel .panel-table .btn-danger {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  color: var(--error);
+  background: var(--warning-bg);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-panel .panel-table .btn-danger:hover {
+  color: var(--warning-bg);
+  background: var(--error);
+}
+
+/* ── Badges ── */
+.dashboard-panel .panel-table .type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.dashboard-panel .panel-table .type-badge.income {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.dashboard-panel .panel-table .type-badge.expense {
+  background: var(--warning-bg);
+  color: var(--error);
+}
+
+.dashboard-panel .panel-table .type-badge.transfer {
+  background: var(--neutral-light);
+  color: var(--neutral-dark);
+}
+
+.dashboard-panel .panel-table .acct-type {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.dashboard-panel .panel-table .empty-msg {
+  color: var(--neutral);
+  font-size: 0.9rem;
+}
+
+.dashboard-panel .error {
+  color: var(--error);
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-panel {
+    flex-direction: column;
+  }
+  .dashboard-panel .panel-form {
+    flex: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

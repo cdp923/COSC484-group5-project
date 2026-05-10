@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuthFetch, API_BASE } from "../../lib/authFetch";
-import "./styles/accounts.css";
+import "./styles/dashboard-panel.css";
 
 const ACCOUNTS_URL = `${API_BASE}/accounts`;
 
@@ -60,11 +60,12 @@ export default function Accounts() {
   if (loading) return <p>Loading accounts...</p>; // shown when accounts API is fetching
 
   return (
-    <>
-      <div className="accounts-container">
-        <h3>Create An Account</h3>
+    <div className="dashboard-panel">
+      <div className="panel-form">
+        <h3>Create Account</h3>
         {error && <p className="error">{error}</p>}
-        <form className="accounts-form" onSubmit={handleCreate}>
+        {/* form to create a new account sits on the left side of the dashboard panel */}
+        <form onSubmit={handleCreate}>
           <label htmlFor="name">Account Name</label>
           <input type="text" id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} required
           />
@@ -85,30 +86,38 @@ export default function Accounts() {
           </button>
         </form>
       </div>
-
-      <div className="accounts-list">
+      {/* table to display user's accounts sits on the right side of the dashboard panel */}
+      <div className="panel-table">
         <h3>Accounts</h3>
         {accounts.length === 0 ? (
-          <p>No accounts yet.</p>
+          <p className="empty-msg">No accounts yet.</p>
         ) : (
-          <ul>
-            {accounts.map((account) => (
-              <li key={account._id}>
-                <span>
-                  <strong>{account.name}</strong> — {account.accountType} — $
-                  {account.balance.toFixed(2)}
-                </span>
-                <button
-                  className="btn btn-danger"    
-                  onClick={() => handleDelete(account._id)}
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Balance</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {accounts.map((account) => (
+                <tr key={account._id}>
+                  <td><strong>{account.name || "Unnamed"}</strong></td>
+                  <td><span className="acct-type">{account.accountType || "N/A"}</span></td>
+                  <td>${Number(account.balance).toFixed(2)}</td>
+                  <td>
+                    <button className="btn-danger" onClick={() => handleDelete(account._id)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
-    </>
+    </div>
   );
 }
