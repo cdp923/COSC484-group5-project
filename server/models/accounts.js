@@ -6,6 +6,13 @@ const accountSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  name: { type: String, required: true, trim: true },
+  accountType: {
+    type: String,
+    enum: ["checking", "savings", "credit", "investment"],
+    required: true,
+    default: "checking",
+  },
   balance: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   lastUpdated: { type: Date, default: Date.now },
