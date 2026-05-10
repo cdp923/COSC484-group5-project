@@ -6,11 +6,15 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const userURL = `${baseURL}/users/me`;
+  const accountsURL = `${baseURL}/accounts`;
+  const transactionsURL = `${baseURL}/transactions`;
+  const budgetsURL = `${baseURL}/budgets`;
 
   useEffect(() => {
-    const getUsers = async () => {
+    const getUser = async () => {
       try {
-        const response = await fetch(`${baseURL}/users`);
+        const response = await fetch(userURL);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -25,7 +29,7 @@ export default function Dashboard() {
       }
     };
 
-    getUsers();
+    getUser();
   }, []);
 
   if (loading) return <p>Loading team members...</p>;
@@ -34,15 +38,6 @@ export default function Dashboard() {
   return (
     <div>
       <h1>Dashboard</h1>
-
-      <h3>Current users:</h3>
-      <ul>
-        {users.map((user) => (
-          <li key={user._id}>
-            <strong>{user.firstname} {user.lastname}</strong>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
