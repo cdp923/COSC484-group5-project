@@ -32,8 +32,22 @@ router.get("/:id", async (req, res) => {
 // Creates a budget
 router.post("/", async (req, res) => {
   try {
+    const { name, totalLimit, period } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "Budget name is required" });
+    }
+    if (totalLimit == null || Number(totalLimit) < 0) {
+      return res.status(400).json({ error: "A valid total limit is required" });
+    }
+    const validPeriods = ["weekly", "monthly", "yearly"];
+    if (!period || !validPeriods.includes(period)) {
+      return res.status(400).json({ error: "Valid period is required (weekly, monthly, yearly)" });
+    }
     const data = await Budget.create({
-      ...req.body,
+      name: name.trim(),
+      totalLimit: Number(totalLimit),
+      period,
+      spent: 0,
       userId: req.userId,
     });
     res.status(201).json(data);
