@@ -1,6 +1,5 @@
 import HeroImage from "../assets/hero-img.png";
 import "./styles/Register.css";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -16,15 +15,21 @@ export default function Register() {
     });
     const [error, setError] = useState("");
     const navigate = useNavigate()
+    const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
     const handleChange = (e) => {
         setRegisterData({ ...registerData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    
 
-        const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (registerData.password !== registerData.confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
 
         try {
             const response = await axios.post(`${baseURL}/auth/register`, {
@@ -36,6 +41,9 @@ export default function Register() {
             });
 
             if (response.status === 201) {
+                if (response.data.token) {
+                    localStorage.setItem("token", response.data.token);
+                }
                 navigate("/dashboard");
             }
         } catch (error) {
