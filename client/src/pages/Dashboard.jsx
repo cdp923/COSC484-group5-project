@@ -27,8 +27,6 @@ export default function Dashboard() {
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
           aria-label="dashboard tabs"
           centered
         >
