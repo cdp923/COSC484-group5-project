@@ -48,6 +48,15 @@ export default function Accounts() {
     }
   }
 
+  async function handleDelete(id) { // function for deleting an account
+    try {
+      await authFetch(`${ACCOUNTS_URL}/${id}`, { method: "DELETE" }); // deletes account from the API using the authFetch wrapper
+      setAccounts((prev) => prev.filter((a) => a._id !== id));
+    } catch (err) {
+      if (err.message !== "Unauthorized") setError(err.message);
+    }
+  }
+
   if (loading) return <p>Loading accounts...</p>; // shown when accounts API is fetching
 
   return (
@@ -75,6 +84,30 @@ export default function Accounts() {
             Create Account
           </button>
         </form>
+      </div>
+
+      <div className="accounts-list">
+        <h3>Accounts</h3>
+        {accounts.length === 0 ? (
+          <p>No accounts yet.</p>
+        ) : (
+          <ul>
+            {accounts.map((account) => (
+              <li key={account._id}>
+                <span>
+                  <strong>{account.name}</strong> — {account.accountType} — $
+                  {account.balance.toFixed(2)}
+                </span>
+                <button
+                  className="btn btn-danger"    
+                  onClick={() => handleDelete(account._id)}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </>
   );
