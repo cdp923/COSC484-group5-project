@@ -48,6 +48,15 @@ export default function Budgets() { // function to get user's budgets from the A
     }
   }
 
+  async function handleDelete(id) { // fetch to delete a budget
+    try {
+      await authFetch(`${BUDGETS_URL}/${id}`, { method: "DELETE" });
+      setBudgets((prev) => prev.filter((b) => b._id !== id));
+    } catch (err) {
+      if (err.message !== "Unauthorized") setError(err.message);
+    }
+  }
+
   if (loading) return <p>Loading budgets...</p>;
 
   return (
@@ -92,6 +101,30 @@ export default function Budgets() { // function to get user's budgets from the A
             Create Budget
           </button>
         </form>
+      </div>
+
+      <div className="budgets-list">
+        <h3>Budgets</h3>
+        {budgets.length === 0 ? (
+          <p>No budgets yet.</p>
+        ) : (
+          <ul>
+            {budgets.map((budget) => (
+              <li key={budget._id}>
+                <span>
+                  <strong>{budget.name}</strong> — ${budget.totalLimit.toFixed(2)}{" "}
+                  ({budget.period})
+                </span>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDelete(budget._id)}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </>
   );
