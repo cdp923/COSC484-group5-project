@@ -14,13 +14,13 @@ export default function Login() {
         setLoginData({ ...loginData, [e.target.name]: e.target.value })
     }
 
+    const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
         try {
-            const response = await axios.post(`${baseURL}/api/auth/login`, {
+            const response = await axios.post(`${baseURL}/auth/login`, {
                 username: loginData.username,
                 password: loginData.password
             })
