@@ -7,48 +7,48 @@ const Budget = require("../models/budgets");
 
 router.use(requireAuth);
 
-async function applyBalanceChange(accountId, userId, amount, type, transferAccountId) { // applies balance changes to the account
+async function applyBalanceChange(accountId, userId, amount, type, transferAccountId) {
   if (type === "income") {
     await Account.findOneAndUpdate(
       { _id: accountId, userId },
-      { $inc: { balance: amount }, lastUpdated: Date.now() }
+      { $inc: { balance: amount }, $set: { lastUpdated: Date.now() } }
     );
   } else if (type === "expense") {
     await Account.findOneAndUpdate(
       { _id: accountId, userId },
-      { $inc: { balance: -amount }, lastUpdated: Date.now() }
+      { $inc: { balance: -amount }, $set: { lastUpdated: Date.now() } }
     );
   } else if (type === "transfer" && transferAccountId) {
     await Account.findOneAndUpdate(
       { _id: accountId, userId },
-      { $inc: { balance: -amount }, lastUpdated: Date.now() }
+      { $inc: { balance: -amount }, $set: { lastUpdated: Date.now() } }
     );
     await Account.findOneAndUpdate(
       { _id: transferAccountId, userId },
-      { $inc: { balance: amount }, lastUpdated: Date.now() }
+      { $inc: { balance: amount }, $set: { lastUpdated: Date.now() } }
     );
   }
 }
 
-async function reverseBalanceChange(accountId, userId, amount, type, transferAccountId) { // adds income to the account and subtracts it from the transfer account
+async function reverseBalanceChange(accountId, userId, amount, type, transferAccountId) {
   if (type === "income") {
     await Account.findOneAndUpdate(
       { _id: accountId, userId },
-      { $inc: { balance: -amount }, lastUpdated: Date.now() }
+      { $inc: { balance: -amount }, $set: { lastUpdated: Date.now() } }
     );
   } else if (type === "expense") {
     await Account.findOneAndUpdate(
       { _id: accountId, userId },
-      { $inc: { balance: amount }, lastUpdated: Date.now() }
+      { $inc: { balance: amount }, $set: { lastUpdated: Date.now() } }
     );
   } else if (type === "transfer" && transferAccountId) {
     await Account.findOneAndUpdate(
       { _id: accountId, userId },
-      { $inc: { balance: amount }, lastUpdated: Date.now() }
+      { $inc: { balance: amount }, $set: { lastUpdated: Date.now() } }
     );
     await Account.findOneAndUpdate(
       { _id: transferAccountId, userId },
-      { $inc: { balance: -amount }, lastUpdated: Date.now() }
+      { $inc: { balance: -amount }, $set: { lastUpdated: Date.now() } }
     );
   }
 }
@@ -57,7 +57,7 @@ async function applyBudgetSpend(budgetId, userId, amount) {
   if (!budgetId) return;
   await Budget.findOneAndUpdate(
     { _id: budgetId, userId },
-    { $inc: { spent: amount }, lastUpdated: Date.now() }
+    { $inc: { spent: amount }, $set: { lastUpdated: Date.now() } }
   );
 }
 
@@ -65,7 +65,7 @@ async function reverseBudgetSpend(budgetId, userId, amount) {
   if (!budgetId) return;
   await Budget.findOneAndUpdate(
     { _id: budgetId, userId },
-    { $inc: { spent: -amount }, lastUpdated: Date.now() }
+    { $inc: { spent: -amount }, $set: { lastUpdated: Date.now() } }
   );
 }
 
@@ -93,8 +93,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Creates a transaction and updates account balance(s)
-router.post("/", async (req, res) => { // creates a new transaction and updates account balance
+// Creates a transaction and updates account balance(s) and budget spent
+router.post("/", async (req, res) => {
   try {
     const { accountId, type, amount, transferAccountId, budgetId } = req.body;
 
@@ -111,10 +111,18 @@ router.post("/", async (req, res) => { // creates a new transaction and updates 
       if (!budget) return res.status(404).json({ error: "Budget not found" });
     }
 
-    const data = await Transaction.create({
-      ...req.body,
+    const transactionData = {
+      accountId,
+      type,
+      amount: Number(amount),
+      description: req.body.description,
+      merchant: req.body.merchant,
       userId: req.userId,
-    });
+    };
+    if (type === "transfer" && transferAccountId) transactionData.transferAccountId = transferAccountId;
+    if (type === "expense" && budgetId) transactionData.budgetId = budgetId;
+
+    const data = await Transaction.create(transactionData);
 
     await applyBalanceChange(accountId, req.userId, Number(amount), type, transferAccountId);
 
@@ -128,7 +136,7 @@ router.post("/", async (req, res) => { // creates a new transaction and updates 
   }
 });
 
-// Updates a transaction and adjusts account balances
+// Updates a transaction and adjusts account balances and budget spent
 router.patch("/:id", async (req, res) => {
   try {
     const existing = await Transaction.findOne({ _id: req.params.id, userId: req.userId });
@@ -160,7 +168,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// Deletes a transaction and reverses the balance change
+// Deletes a transaction and reverses the balance change and budget spent
 router.delete("/:id", async (req, res) => {
   try {
     const deleted = await Transaction.findOneAndDelete({ _id: req.params.id, userId: req.userId });
