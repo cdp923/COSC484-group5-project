@@ -34,6 +34,9 @@ app.use("/api/transactions", transactionRouter);
 const recurringTransactionRouter = require("./Routes/recurringTransactions");
 app.use("/api/recurringTransactions", recurringTransactionRouter);
 
+const budgetRouter = require("./Routes/budgets");
+app.use("/api/budgets", budgetRouter);
+
 const authRouter = require("./Routes/auth");
 app.use("/api/auth", authRouter);
 
