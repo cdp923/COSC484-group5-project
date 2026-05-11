@@ -32,8 +32,18 @@ router.get("/:id", async (req, res) => {
 // Creates an account
 router.post("/", async (req, res) => {
   try {
+    const { name, accountType, balance } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "Account name is required" });
+    }
+    const validTypes = ["checking", "savings", "credit", "investment"];
+    if (!accountType || !validTypes.includes(accountType)) {
+      return res.status(400).json({ error: "Valid account type is required" });
+    }
     const data = await Account.create({
-      ...req.body,
+      name: name.trim(),
+      accountType,
+      balance: Number(balance) || 0,
       userId: req.userId,
     });
     res.status(201).json(data);

@@ -24,6 +24,7 @@ const budgetSchema = new mongoose.Schema({
   startDate: { type: Date, default: Date.now },
   endDate: { type: Date },
   totalLimit: { type: Number, required: true, min: 0 },
+  spent: { type: Number, default: 0 },
   categories: { type: [budgetCategorySchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   lastUpdated: { type: Date, default: Date.now },
