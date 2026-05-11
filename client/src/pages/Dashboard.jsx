@@ -1,48 +1,48 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Tabs, Tab, Paper } from "@mui/material";
 
+import Overview from "../components/Dashboard/Overview";
+import Accounts from "../components/Dashboard/Accounts";
+import Transactions from "../components/Dashboard/Transactions";
+import Budgets from "../components/Dashboard/Budgets";  
 export default function Dashboard() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const response = await fetch(`${baseURL}/users`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
-        const data = await response.json();
-        setUsers(data);
-      } catch (err) {
-        setError(err.message);
-        console.error("fetch failed", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUsers();
-  }, []);
-
-  if (loading) return <p>Loading team members...</p>;
-  if (error) return <p className="error">Error: {error}</p>;
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
 
   return (
     <div>
-      <h1>Dashboard</h1>
-
-      <h3>Current users:</h3>
-      <ul>
-        {users.map((user) => (
-          <li key={user._id}>
-            <strong>{user.firstname} {user.lastname}</strong>
-          </li>
-        ))}
-      </ul>
+      <Box sx={{ p: 2 }}>
+      <Paper elevation={1} sx={{ mb: 2 }}>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          aria-label="dashboard tabs"
+          centered
+        >
+          <Tab label="Overview" />
+          <Tab label="Accounts" />
+          <Tab label="Transactions" />
+          <Tab label="Budgets" />
+        </Tabs>
+      </Paper>
+      <Box sx={{ mt: 1 }}>
+        {activeTab === 0 && <Overview />}
+        {activeTab === 1 && <Accounts />}
+        {activeTab === 2 && <Transactions />}
+        {activeTab === 3 && <Budgets />}
+      </Box>
+    </Box>
     </div>
   );
 }

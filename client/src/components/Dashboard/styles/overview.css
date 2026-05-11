@@ -1,0 +1,210 @@
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+/* ── Summary cards ── */
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.overview-card {
+  padding: 1.5rem;
+  background: var(--neutral-white);
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.overview-card h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1rem;
+  color: var(--neutral);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.overview-card .value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--neutral-dark);
+}
+
+.overview-card .value.positive {
+  color: var(--primary);
+}
+
+.overview-card .value.negative {
+  color: var(--error);
+}
+
+.overview-card .account-type-label {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+/* ── Chart grid ── */
+.overview-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1rem;
+}
+
+.chart-panel {
+  background: var(--neutral-white);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.chart-panel h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  color: var(--primary);
+}
+
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
+  color: var(--neutral);
+  font-size: 0.9rem;
+}
+
+/* ── Budget progress ── */
+.overview-budgets {
+  background: var(--neutral-white);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.overview-budgets h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  color: var(--primary);
+}
+
+.budget-row {
+  margin-bottom: 1rem;
+}
+
+.budget-row:last-child {
+  margin-bottom: 0;
+}
+
+.budget-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.budget-header .budget-name {
+  font-weight: 700;
+  color: var(--neutral-dark);
+}
+
+.budget-header .budget-amounts {
+  color: var(--neutral);
+}
+
+.budget-track {
+  height: 10px;
+  background: var(--neutral-light);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.budget-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+/* ── Recent transactions ── */
+.overview-recent {
+  background: var(--neutral-white);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.overview-recent h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  color: var(--primary);
+}
+
+.recent-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recent-table th,
+.recent-table td {
+  text-align: left;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--neutral-light);
+  font-size: 0.88rem;
+  color: var(--neutral-dark);
+}
+
+.recent-table th {
+  color: var(--neutral);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.4px;
+}
+
+.recent-table tbody tr:hover {
+  background: var(--bg-light);
+}
+
+.recent-table .type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.type-badge.income {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.type-badge.expense {
+  background: var(--warning-bg);
+  color: var(--error);
+}
+
+.type-badge.transfer {
+  background: var(--neutral-light);
+  color: var(--neutral-dark);
+}
+
+.overview-empty {
+  color: var(--neutral);
+  font-size: 0.9rem;
+}
